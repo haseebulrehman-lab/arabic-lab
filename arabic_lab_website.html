@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All The Arabic You Never Learned — Interactive Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue:#1a3a6b;--gold:#c8973a;--cream:#faf8f4;--border:#e0d8cc;
+  --green:#2d6a4f;--red:#9b2226;--text:#1a1a1a;--muted:#6b6560;
+  --white:#ffffff;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--cream);color:var(--text);line-height:1.6;}
+
+/* ── HEADER ── */
+.site-header{background:var(--blue);color:white;padding:0;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.header-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.logo{display:flex;align-items:center;gap:14px;}
+.logo-arabic{font-family:'Amiri',serif;font-size:28px;color:#D4AF37;line-height:1;}
+.logo-text h1{font-size:15px;font-weight:600;letter-spacing:.02em;line-height:1.2;}
+.logo-text p{font-size:11px;opacity:.55;margin-top:1px;font-family:sans-serif;}
+.header-progress{display:flex;align-items:center;gap:10px;}
+.progress-label{font-size:12px;opacity:.6;font-family:sans-serif;white-space:nowrap;}
+.progress-track{width:120px;height:5px;background:rgba(255,255,255,.2);border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:#D4AF37;border-radius:3px;transition:width .5s ease;}
+
+/* ── LAYOUT ── */
+.layout{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 60px);}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--white);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+.part-label{padding:16px 20px 6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-family:sans-serif;font-weight:600;}
+.nav-chapter{display:block;padding:9px 20px;font-size:13px;cursor:pointer;color:var(--text);border-left:3px solid transparent;transition:all .15s;text-decoration:none;line-height:1.4;}
+.nav-chapter:hover{background:#f5f2ec;color:var(--blue);}
+.nav-chapter.active{border-left-color:var(--gold);background:#fdf8ee;color:var(--blue);font-weight:600;}
+.nav-section{display:block;padding:5px 20px 5px 30px;font-size:12px;cursor:pointer;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-section:hover{color:var(--blue);}
+.nav-section.active{color:var(--gold);}
+.completed-check{color:var(--green);margin-left:4px;font-size:11px;}
+
+/* ── MAIN CONTENT ── */
+.content-area{padding:40px 48px;max-width:760px;}
+.chapter-hero{margin-bottom:32px;padding-bottom:24px;border-bottom:2px solid var(--gold);}
+.chapter-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--gold);font-family:sans-serif;font-weight:600;margin-bottom:8px;}
+.chapter-title{font-size:30px;font-weight:300;color:var(--blue);line-height:1.2;}
+.chapter-intro{font-size:15px;color:var(--muted);margin-top:10px;line-height:1.7;}
+
+.section-heading{font-size:18px;font-weight:600;color:var(--blue);margin:36px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.section-letter{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--gold);color:white;border-radius:50%;font-size:13px;font-weight:700;flex-shrink:0;}
+
+p.body-text{font-size:15px;line-height:1.85;margin-bottom:16px;color:#2a2520;}
+
+.example-table{width:100%;border-collapse:collapse;margin:20px 0;background:var(--white);border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.04);}
+.example-table th{background:var(--blue);color:white;padding:10px 16px;font-size:12px;font-family:sans-serif;font-weight:600;letter-spacing:.06em;text-transform:uppercase;}
+.example-table th:last-child{text-align:right;direction:rtl;}
+.example-table td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle;}
+.example-table td:last-child{font-family:'Amiri',serif;font-size:20px;direction:rtl;text-align:right;color:var(--blue);}
+.example-table tr:last-child td{border-bottom:none;}
+.example-table tr:hover td{background:#f9f6f0;}
+
+.rule-box{background:var(--white);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:0 10px 10px 0;padding:16px 20px;margin:20px 0;font-size:14px;line-height:1.75;}
+.rule-box .arabic-inline{font-family:'Amiri',serif;font-size:19px;direction:rtl;display:inline;}
+.rule-box strong{color:var(--blue);}
+
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:16px 0;}
+.vocab-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;flex-direction:column;gap:4px;}
+.vocab-en{font-size:12px;color:var(--muted);font-family:sans-serif;}
+.vocab-ar{font-family:'Amiri',serif;font-size:22px;direction:rtl;color:var(--blue);line-height:1.3;}
+.vocab-trans{font-size:12px;color:var(--muted);font-style:italic;}
+
+/* ── DRILL BLOCKS ── */
+.drill-block{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px;margin:28px 0;box-shadow:0 1px 6px rgba(0,0,0,.04);}
+.drill-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px;}
+.drill-badge{display:inline-block;padding:3px 10px;background:#fdf0d5;color:#8a6520;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border-radius:4px;font-family:sans-serif;margin-bottom:6px;}
+.drill-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.drill-instructions{font-size:13px;color:var(--muted);line-height:1.5;}
+.drill-score-badge{background:var(--cream);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-family:sans-serif;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+.drill-score-badge.passed{background:#f0faf4;border-color:#2d6a4f;color:#2d6a4f;}
+
+/* MCQ */
+.mcq-item{margin-bottom:20px;}
+.mcq-prompt{font-family:'Amiri',serif;font-size:22px;direction:rtl;text-align:right;margin-bottom:4px;line-height:1.6;}
+.mcq-prompt-en{font-size:13px;color:var(--muted);margin-bottom:10px;font-style:italic;}
+.mcq-options{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.mcq-btn{font-family:'Amiri',serif;font-size:18px;direction:rtl;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;background:var(--cream);cursor:pointer;text-align:right;transition:all .15s;color:var(--text);width:100%;}
+.mcq-btn.en-option{font-family:'Source Serif 4',serif;font-size:14px;direction:ltr;text-align:left;}
+.mcq-btn:hover:not(:disabled){background:var(--white);border-color:var(--blue);}
+.mcq-btn.correct{background:#f0faf4;border-color:var(--green);color:var(--green);}
+.mcq-btn.wrong{background:#fff5f5;border-color:var(--red);color:var(--red);}
+.mcq-btn:disabled{cursor:default;}
+
+/* TEXT INPUT drills */
+.input-item{margin-bottom:20px;}
+.input-prompt{font-family:'Amiri',serif;font-size:21px;direction:rtl;text-align:right;margin-bottom:6px;line-height:1.6;}
+.input-prompt-en{font-size:13px;color:var(--muted);margin-bottom:8px;font-style:italic;}
+.input-row{display:flex;gap:8px;align-items:stretch;}
+.drill-input{font-family:'Amiri',serif;font-size:18px;direction:rtl;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;flex:1;background:var(--cream);color:var(--text);transition:border-color .15s,background .15s;}
+.drill-input:focus{outline:none;border-color:var(--blue);background:var(--white);}
+.drill-input.correct{border-color:var(--green);background:#f0faf4;}
+.drill-input.wrong{border-color:var(--red);background:#fff5f5;}
+.check-btn{padding:9px 16px;background:var(--blue);color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-family:sans-serif;font-weight:600;transition:background .15s;white-space:nowrap;}
+.check-btn:hover{background:#244a8a;}
+
+/* Feedback */
+.feedback{font-size:13px;margin-top:7px;padding:7px 12px;border-radius:6px;display:none;font-family:sans-serif;line-height:1.5;}
+.feedback.show{display:block;}
+.feedback.correct{background:#f0faf4;color:#1e5c38;border:1px solid #c0e0cc;}
+.feedback.wrong{background:#fff5f5;color:#7a1a1a;border:1px solid #f0c0c0;}
+
+/* Classify (Sun/Moon) */
+.classify-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+.classify-col{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;}
+.classify-header{padding:10px 14px;font-size:13px;font-family:sans-serif;font-weight:600;text-align:center;}
+.classify-header.sun{background:#fff8e1;color:#7a5500;}
+.classify-header.moon{background:#e8eef8;color:#1a3a6b;}
+.classify-drop{min-height:90px;padding:10px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;}
+.word-chip{font-family:'Amiri',serif;font-size:18px;direction:rtl;border:1.5px solid var(--border);border-radius:8px;padding:5px 12px;background:var(--cream);cursor:pointer;transition:all .15s;user-select:none;}
+.word-chip:hover{border-color:var(--blue);background:var(--white);}
+.word-chip.chip-correct{border-color:var(--green);background:#f0faf4;color:var(--green);cursor:default;}
+.word-chip.chip-wrong{border-color:var(--red);background:#fff5f5;color:var(--red);cursor:default;}
+.chips-pool{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;min-height:40px;padding:8px;background:var(--cream);border-radius:8px;border:1px dashed var(--border);}
+.pool-label{font-size:11px;color:var(--muted);font-family:sans-serif;margin-bottom:4px;}
+
+/* Drill footer */
+.drill-footer{display:flex;align-items:center;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+.check-all-btn{padding:10px 22px;background:var(--gold);color:white;border:none;border-radius:9px;cursor:pointer;font-size:14px;font-family:sans-serif;font-weight:700;transition:background .15s;}
+.check-all-btn:hover{background:#a87a2a;}
+.result-text{font-family:sans-serif;font-size:13px;color:var(--muted);}
+.result-text.good{color:var(--green);font-weight:600;}
+
+/* True/False */
+.tf-item{margin-bottom:16px;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;}
+.tf-arabic{font-family:'Amiri',serif;font-size:21px;direction:rtl;text-align:right;margin-bottom:10px;}
+.tf-btns{display:flex;gap:10px;}
+.tf-btn{flex:1;padding:9px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-family:sans-serif;font-weight:600;transition:all .15s;background:var(--white);}
+.tf-btn.yes{color:var(--green);}
+.tf-btn.no{color:var(--red);}
+.tf-btn:hover:not(:disabled){border-color:currentColor;background:var(--cream);}
+.tf-btn.chosen-correct{background:#f0faf4;border-color:var(--green);color:var(--green);}
+.tf-btn.chosen-wrong{background:#fff5f5;border-color:var(--red);color:var(--red);}
+
+/* CHAPTER NAVIGATION */
+.chapter-nav{display:flex;justify-content:space-between;margin-top:40px;padding-top:24px;border-top:1px solid var(--border);}
+.nav-btn{padding:11px 22px;border-radius:9px;cursor:pointer;font-size:14px;font-family:'Source Serif 4',serif;border:1.5px solid var(--border);background:var(--white);color:var(--text);transition:all .15s;}
+.nav-btn:hover{border-color:var(--blue);color:var(--blue);}
+.nav-btn.primary{background:var(--blue);color:white;border-color:var(--blue);}
+.nav-btn.primary:hover{background:#244a8a;}
+.nav-btn:disabled{opacity:.4;cursor:default;}
+
+/* Page display */
+.chapter-page{display:none;}
+.chapter-page.active{display:block;}
+
+/* Responsive */
+@media(max-width:700px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .content-area{padding:24px 20px;}
+  .mcq-options{grid-template-columns:1fr;}
+  .classify-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-arabic">كلّ العربيّة</div>
+      <div class="logo-text">
+        <h1>All The Arabic You Never Learned</h1>
+        <p>Defense Language Institute · Interactive Edition</p>
+      </div>
+    </div>
+    <div class="header-progress">
+      <span class="progress-label">Progress</span>
+      <div class="progress-track"><div class="progress-fill" id="global-prog" style="width:0%"></div></div>
+      <span class="progress-label" id="prog-label">0 / 4 chapters</span>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="part-label">Part I — Back to Basics</div>
+    <a class="nav-chapter active" onclick="showChapter('ch1')">
+      Chapter 1: Sentences & Cases <span class="completed-check" id="done-ch1"></span>
+    </a>
+    <a class="nav-section" onclick="showChapter('ch1')">A. Equational Sentence</a>
+    <a class="nav-section" onclick="showChapter('ch1')">B. Definite Article</a>
+    <a class="nav-section" onclick="showChapter('ch1')">C–D. Nominative Case</a>
+    <a class="nav-section" onclick="showChapter('ch1')">▶ Drills 1–3</a>
+
+    <a class="nav-chapter" onclick="showChapter('ch2')">
+      Chapter 2: The Idaafa <span class="completed-check" id="done-ch2"></span>
+    </a>
+    <a class="nav-section" onclick="showChapter('ch2')">A. Genitive Case</a>
+    <a class="nav-section" onclick="showChapter('ch2')">B. Prepositions</a>
+    <a class="nav-section" onclick="showChapter('ch2')">C. Idaafa Construction</a>
+    <a class="nav-section" onclick="showChapter('ch2')">▶ Drills 4–5</a>
+
+    <div class="part-label" style="margin-top:12px;">Part II — Verbally Speaking</div>
+    <a class="nav-chapter" onclick="showChapter('ch3')">
+      Chapter 1: Sound & Hollow Verbs <span class="completed-check" id="done-ch3"></span>
+    </a>
+    <a class="nav-section" onclick="showChapter('ch3')">Sound Verbs, Form I</a>
+    <a class="nav-section" onclick="showChapter('ch3')">Hollow Verbs, Form I</a>
+    <a class="nav-section" onclick="showChapter('ch3')">▶ Drills 6–7</a>
+
+    <a class="nav-chapter" onclick="showChapter('ch4')">
+      Chapter 2: Form II Verbs <span class="completed-check" id="done-ch4"></span>
+    </a>
+    <a class="nav-section" onclick="showChapter('ch4')">Deriving Form II</a>
+    <a class="nav-section" onclick="showChapter('ch4')">▶ Drill 8</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ══════════════════════════════════ CHAPTER 1 ══ -->
+    <div class="chapter-page active content-area" id="page-ch1">
+      <div class="chapter-hero">
+        <div class="chapter-eyebrow">Part I · Chapter One</div>
+        <h2 class="chapter-title">The Arabic Sentence — Basics of Case</h2>
+        <p class="chapter-intro">We cover the equational sentence (no verb needed!), the definite article and sun/moon letters, and the nominative case ending. Master these and you understand the skeleton of every Arabic sentence.</p>
+      </div>
+
+      <h3 class="section-heading"><span class="section-letter">A</span> The Equational Sentence</h3>
+      <p class="body-text">There are two kinds of sentences in Arabic — those with a verb and those without. Sentences without a verb are called <strong>equational sentences</strong>. They correspond to English sentences using "to be" in the present tense: "I am a student," "The book is new."</p>
+      <p class="body-text">In Arabic, no verb is needed. "I am Samiir" is simply <span style="font-family:'Amiri',serif;font-size:19px;">أنا سمير</span>. The subject is a pronoun; the predicate is the proper name.</p>
+
+      <table class="example-table">
+        <tr><th>English</th><th>Arabic</th></tr>
+        <tr><td>I am Samiir.</td><td>أنا سَمير.</td></tr>
+        <tr><td>You are Muhammad.</td><td>أنتَ مُحَمَّد.</td></tr>
+        <tr><td>She is Samiira.</td><td>هِيَ سَميرة.</td></tr>
+        <tr><td>The student is new.</td><td>الطالبُ جَديد.</td></tr>
+        <tr><td>The book is excellent.</td><td>الكِتابُ مُمتاز.</td></tr>
+      </table>
+
+      <h3 class="section-heading"><span class="section-letter">B</span> The Definite Article</h3>
+      <p class="body-text">The definite article in Arabic is <span style="font-family:'Amiri',serif;font-size:19px;">ال</span> — attached directly to the noun. Arabic has no indefinite article; the absence of <span style="font-family:'Amiri',serif;font-size:19px;">ال</span> makes a noun indefinite.</p>
+      <p class="body-text">The ل of <span style="font-family:'Amiri',serif;font-size:19px;">ال</span> assimilates to <strong>sun letters</strong> (pronounced near the front of the mouth, near the teeth). With <strong>moon letters</strong> it stays unchanged.</p>
+
+      <div class="rule-box">
+        <strong>☀️ Sun letters</strong> (ل assimilates — you pronounce the first letter twice):<br>
+        <span style="font-family:'Amiri',serif;font-size:20px;direction:rtl;display:block;margin:6px 0;">ت ث د ذ ر ز س ش ص ض ط ظ ل ن</span>
+        Example: الشَّمس = <em>ash-shams</em> (not "al-shams")<br><br>
+        <strong>🌙 Moon letters</strong> (ل stays — you say "al-" clearly):<br>
+        <span style="font-family:'Amiri',serif;font-size:20px;direction:rtl;display:block;margin:6px 0;">ا ب ج ح خ ع غ ف ق ك م ه و ي</span>
+        Example: الكِتاب = <em>al-kitaab</em>
+      </div>
+
+      <h3 class="section-heading"><span class="section-letter">C–D</span> Case & The Nominative</h3>
+      <p class="body-text">Arabic is a <strong>case language</strong>. The role a noun plays in a sentence is shown by its <em>case ending</em> — a short vowel added to the noun's last letter. There are three cases: nominative, genitive, accusative.</p>
+      <p class="body-text">The <strong>nominative case</strong> is used for: (1) the subject of any sentence, and (2) the predicate of an equational sentence.</p>
+
+      <div class="rule-box">
+        <strong>Definite noun</strong> → one ضَمَّة (dhamma, sounds like "u") written above the last letter → <span style="font-family:'Amiri',serif;font-size:19px;">الطالبُ</span><br><br>
+        <strong>Indefinite noun</strong> → two dhammas (tanwīn, pronounced as "-un") → <span style="font-family:'Amiri',serif;font-size:19px;">طالبٌ</span> (taalibun)
+      </div>
+
+      <div class="vocab-grid">
+        <div class="vocab-card"><div class="vocab-en">student (m.)</div><div class="vocab-ar">طالب</div><div class="vocab-trans">taalib</div></div>
+        <div class="vocab-card"><div class="vocab-en">student (f.)</div><div class="vocab-ar">طالبة</div><div class="vocab-trans">taaliba</div></div>
+        <div class="vocab-card"><div class="vocab-en">teacher (m.)</div><div class="vocab-ar">مُدَرِّس</div><div class="vocab-trans">mudarris</div></div>
+        <div class="vocab-card"><div class="vocab-en">book</div><div class="vocab-ar">كِتاب</div><div class="vocab-trans">kitaab</div></div>
+        <div class="vocab-card"><div class="vocab-en">new</div><div class="vocab-ar">جَديد</div><div class="vocab-trans">jadiid</div></div>
+        <div class="vocab-card"><div class="vocab-en">excellent</div><div class="vocab-ar">مُمتاز</div><div class="vocab-trans">mumtaaz</div></div>
+        <div class="vocab-card"><div class="vocab-en">school</div><div class="vocab-ar">مَدرَسة</div><div class="vocab-trans">madrasa</div></div>
+        <div class="vocab-card"><div class="vocab-en">director (m.)</div><div class="vocab-ar">مُدير</div><div class="vocab-trans">mudiir</div></div>
+      </div>
+
+      <!-- DRILL 1 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 1</div>
+            <div class="drill-title">Sun or Moon Letter?</div>
+            <div class="drill-instructions">Click each word chip to move it. Place it in the ☀️ Sun or 🌙 Moon column, then check your answers.</div>
+          </div>
+          <div class="drill-score-badge" id="d1-badge">Not started</div>
+        </div>
+        <div class="classify-grid">
+          <div class="classify-col">
+            <div class="classify-header sun">☀️ Sun Letter — ال assimilates</div>
+            <div class="classify-drop" id="drop-sun"></div>
+          </div>
+          <div class="classify-col">
+            <div class="classify-header moon">🌙 Moon Letter — ال stays</div>
+            <div class="classify-drop" id="drop-moon"></div>
+          </div>
+        </div>
+        <div class="pool-label">Unsorted words (click to move):</div>
+        <div class="chips-pool" id="chips-pool-1"></div>
+        <div class="drill-footer">
+          <span class="result-text" id="d1-result"></span>
+          <button class="check-all-btn" onclick="checkDrill1()">Check Answers</button>
+        </div>
+      </div>
+
+      <!-- DRILL 2 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 2</div>
+            <div class="drill-title">Equational Sentences — Choose the Correct Arabic</div>
+            <div class="drill-instructions">Select the Arabic sentence that correctly translates the English. Watch the case endings!</div>
+          </div>
+          <div class="drill-score-badge" id="d2-badge">Not started</div>
+        </div>
+        <div id="drill2-container"></div>
+      </div>
+
+      <!-- DRILL 3 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 3</div>
+            <div class="drill-title">Add the Nominative Ending</div>
+            <div class="drill-instructions">Each sentence below is missing its nominative case marker on the subject. Type ُ (one dhamma) for definite nouns, or ٌ (two dhammas / tanwīn) for indefinite nouns.</div>
+          </div>
+          <div class="drill-score-badge" id="d3-badge">Not started</div>
+        </div>
+        <div id="drill3-container"></div>
+        <div class="drill-footer">
+          <span class="result-text" id="d3-result"></span>
+          <button class="check-all-btn" onclick="checkDrill3()">Check All</button>
+        </div>
+      </div>
+
+      <div class="chapter-nav">
+        <button class="nav-btn" disabled>← Previous</button>
+        <button class="nav-btn primary" onclick="completeAndNext('ch1','ch2')">Next: The Idaafa →</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════ CHAPTER 2 ══ -->
+    <div class="chapter-page content-area" id="page-ch2">
+      <div class="chapter-hero">
+        <div class="chapter-eyebrow">Part I · Chapter Two</div>
+        <h2 class="chapter-title">The Genitive Case & The Idaafa</h2>
+        <p class="chapter-intro">The idaafa (إضافة, "annexation") is how Arabic expresses possession and noun-of-noun relationships. Once you truly understand it, entire passages open up.</p>
+      </div>
+
+      <h3 class="section-heading"><span class="section-letter">A</span> The Genitive Case</h3>
+      <p class="body-text">The genitive case is triggered by prepositions and by the idaafa construction. Instead of a dhamma, it uses a <strong>kasra</strong> (ِ) — the short "i" vowel — on the last letter.</p>
+      <div class="rule-box">
+        <strong>Definite</strong> → one kasra → <span style="font-family:'Amiri',serif;font-size:19px;">الطالبِ</span> (al-taalib<u>i</u>)<br><br>
+        <strong>Indefinite</strong> → two kasras (tanwīn-kasra) → <span style="font-family:'Amiri',serif;font-size:19px;">طالبٍ</span> (taalib<u>in</u>)
+      </div>
+
+      <h3 class="section-heading"><span class="section-letter">B</span> Prepositions</h3>
+      <p class="body-text">Every Arabic preposition puts the following noun in the genitive case. Learn these — they appear on every page of Arabic text.</p>
+      <table class="example-table">
+        <tr><th>Meaning</th><th>Arabic</th></tr>
+        <tr><td>in, at</td><td>في</td></tr>
+        <tr><td>on, above</td><td>على</td></tr>
+        <tr><td>from</td><td>مِن</td></tr>
+        <tr><td>to, toward</td><td>إلى</td></tr>
+        <tr><td>with</td><td>مَع</td></tr>
+        <tr><td>about, concerning</td><td>عَن</td></tr>
+        <tr><td>by, near</td><td>عِند</td></tr>
+      </table>
+
+      <h3 class="section-heading"><span class="section-letter">C</span> The Idaafa Construction</h3>
+      <p class="body-text">The idaafa chains two (or more) nouns together to show possession or a noun-of-noun relationship. Three rules govern it:</p>
+      <div class="rule-box">
+        <strong>Rule 1:</strong> The first noun <em>never</em> takes ال and never takes tanwīn. It is "annexed" — stripped bare.<br><br>
+        <strong>Rule 2:</strong> The second (and any later) noun is in the <em>genitive case</em>.<br><br>
+        <strong>Rule 3:</strong> The whole phrase is definite <em>if and only if</em> the last noun is definite. Definiteness flows backward.<br><br>
+        Structure: <span style="font-family:'Amiri',serif;font-size:20px;">كِتابُ الطالبِ</span> = <em>the student's book</em>
+      </div>
+      <table class="example-table">
+        <tr><th>English</th><th>Arabic</th></tr>
+        <tr><td>the student's book</td><td>كِتابُ الطالبِ</td></tr>
+        <tr><td>the door of the house</td><td>بابُ البَيتِ</td></tr>
+        <tr><td>the language of the Arabs</td><td>لُغةُ العَرَبِ</td></tr>
+        <tr><td>the teacher's office</td><td>مَكتَبُ المُدَرِّسِ</td></tr>
+        <tr><td>a book of a student (indef.)</td><td>كِتابُ طالبٍ</td></tr>
+      </table>
+
+      <!-- DRILL 4 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 4</div>
+            <div class="drill-title">Translate the Idaafa Phrase</div>
+            <div class="drill-instructions">Choose the best English translation for each Arabic phrase.</div>
+          </div>
+          <div class="drill-score-badge" id="d4-badge">Not started</div>
+        </div>
+        <div id="drill4-container"></div>
+      </div>
+
+      <!-- DRILL 5 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 5</div>
+            <div class="drill-title">Correct Idaafa or Not?</div>
+            <div class="drill-instructions">Judge each phrase. Is it a grammatically correct idaafa construction?</div>
+          </div>
+          <div class="drill-score-badge" id="d5-badge">Not started</div>
+        </div>
+        <div id="drill5-container"></div>
+        <div class="drill-footer">
+          <span class="result-text" id="d5-result"></span>
+        </div>
+      </div>
+
+      <div class="chapter-nav">
+        <button class="nav-btn" onclick="showChapter('ch1')">← Chapter 1</button>
+        <button class="nav-btn primary" onclick="completeAndNext('ch2','ch3')">Next: Sound Verbs →</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════ CHAPTER 3 ══ -->
+    <div class="chapter-page content-area" id="page-ch3">
+      <div class="chapter-hero">
+        <div class="chapter-eyebrow">Part II · Chapter One</div>
+        <h2 class="chapter-title">Sound Verbs & Hollow Verbs — Form I</h2>
+        <p class="chapter-intro">Arabic verbs are built on three-letter roots. Once you understand the patterns, you can read and produce hundreds of verb forms. This chapter covers Form I — the foundation of everything.</p>
+      </div>
+
+      <h3 class="section-heading">The Root System</h3>
+      <p class="body-text">Almost every Arabic word comes from a three-letter root (جذر, jidhr). The root carries the core meaning; different patterns (أوزان, awzaan) applied to the root create nouns, verbs, adjectives, and more.</p>
+      <p class="body-text">For example, the root <strong>ك-ت-ب</strong> (k-t-b) relates to writing: كَتَبَ (he wrote), كِتاب (book), كاتِب (writer), مَكتَبة (library).</p>
+
+      <h3 class="section-heading">Sound Verbs — Form I</h3>
+      <p class="body-text">A <strong>sound verb</strong> has three strong root letters — no و, ي, or doubled middle letter. The Form I pattern is the most basic.</p>
+      <div class="rule-box">
+        <strong>Past tense patterns:</strong> <span style="font-family:'Amiri',serif;font-size:19px;">فَعَلَ / فَعِلَ / فَعُلَ</span><br>
+        <strong>Present tense patterns:</strong> <span style="font-family:'Amiri',serif;font-size:19px;">يَفعَلُ / يَفعِلُ / يَفعُلُ</span><br><br>
+        The vowel on the middle root letter changes between past and present — you must learn this for each verb.
+      </div>
+      <table class="example-table">
+        <tr><th>English</th><th>Arabic (past / present)</th></tr>
+        <tr><td>he wrote / he writes</td><td>كَتَبَ / يَكتُبُ</td></tr>
+        <tr><td>he studied / he studies</td><td>دَرَسَ / يَدرُسُ</td></tr>
+        <tr><td>he opened / he opens</td><td>فَتَحَ / يَفتَحُ</td></tr>
+        <tr><td>she understood / she understands</td><td>فَهِمَت / تَفهَمُ</td></tr>
+        <tr><td>he went / he goes</td><td>ذَهَبَ / يَذهَبُ</td></tr>
+      </table>
+
+      <h3 class="section-heading">Hollow Verbs — Form I</h3>
+      <p class="body-text">A <strong>hollow verb</strong> has و or ي as its <em>middle</em> root letter. In many forms, that middle letter "collapses" into a long vowel or disappears, which is what makes hollow verbs tricky for learners.</p>
+      <div class="rule-box">
+        Root <strong>ق-و-ل</strong> (say): past → <span style="font-family:'Amiri',serif;font-size:19px;">قالَ</span> | present → <span style="font-family:'Amiri',serif;font-size:19px;">يَقولُ</span><br>
+        Root <strong>ن-و-م</strong> (sleep): past → <span style="font-family:'Amiri',serif;font-size:19px;">نامَ</span> | present → <span style="font-family:'Amiri',serif;font-size:19px;">يَنامُ</span><br>
+        Root <strong>ب-ي-ع</strong> (sell): past → <span style="font-family:'Amiri',serif;font-size:19px;">باعَ</span> | present → <span style="font-family:'Amiri',serif;font-size:19px;">يَبيعُ</span>
+      </div>
+      <table class="example-table">
+        <tr><th>English</th><th>Arabic</th></tr>
+        <tr><td>he said</td><td>قالَ</td></tr>
+        <tr><td>he says / is saying</td><td>يَقولُ</td></tr>
+        <tr><td>she slept</td><td>نامَت</td></tr>
+        <tr><td>he sold</td><td>باعَ</td></tr>
+        <tr><td>he wanted / I want</td><td>أرادَ / أُريدُ</td></tr>
+        <tr><td>he came</td><td>جاءَ</td></tr>
+      </table>
+
+      <!-- DRILL 6 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 6</div>
+            <div class="drill-title">Sound Verb or Hollow Verb?</div>
+            <div class="drill-instructions">Examine each verb and identify whether it is a sound verb or a hollow verb.</div>
+          </div>
+          <div class="drill-score-badge" id="d6-badge">Not started</div>
+        </div>
+        <div id="drill6-container"></div>
+        <div class="drill-footer">
+          <span class="result-text" id="d6-result"></span>
+        </div>
+      </div>
+
+      <!-- DRILL 7 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 7</div>
+            <div class="drill-title">What Does This Verb Mean?</div>
+            <div class="drill-instructions">Choose the correct English meaning for each Arabic verb form.</div>
+          </div>
+          <div class="drill-score-badge" id="d7-badge">Not started</div>
+        </div>
+        <div id="drill7-container"></div>
+      </div>
+
+      <div class="chapter-nav">
+        <button class="nav-btn" onclick="showChapter('ch2')">← Chapter 2</button>
+        <button class="nav-btn primary" onclick="completeAndNext('ch3','ch4')">Next: Form II Verbs →</button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════ CHAPTER 4 ══ -->
+    <div class="chapter-page content-area" id="page-ch4">
+      <div class="chapter-hero">
+        <div class="chapter-eyebrow">Part II · Chapter Two</div>
+        <h2 class="chapter-title">Form II Verbs & Commands</h2>
+        <p class="chapter-intro">Form II verbs are derived from Form I by doubling the middle root letter. This adds intensifying or causative meaning — and once you see the pattern, you can derive hundreds of verbs.</p>
+      </div>
+
+      <h3 class="section-heading"><span class="section-letter">A</span> Deriving Form II</h3>
+      <p class="body-text">The rule is simple: <strong>double the middle root letter</strong> (add a shadda ّ over it). This consistently gives the verb a causative or intensive meaning.</p>
+      <div class="rule-box">
+        Form I: <span style="font-family:'Amiri',serif;font-size:19px;">دَرَسَ</span> (he studied) → Form II: <span style="font-family:'Amiri',serif;font-size:19px;">دَرَّسَ</span> (he taught = caused to study)<br><br>
+        Form I: <span style="font-family:'Amiri',serif;font-size:19px;">عَلِمَ</span> (he knew) → Form II: <span style="font-family:'Amiri',serif;font-size:19px;">عَلَّمَ</span> (he taught = caused to know)<br><br>
+        Form I: <span style="font-family:'Amiri',serif;font-size:19px;">كَسَرَ</span> (he broke) → Form II: <span style="font-family:'Amiri',serif;font-size:19px;">كَسَّرَ</span> (he smashed / broke repeatedly)
+      </div>
+      <table class="example-table">
+        <tr><th>Form I</th><th>Form II</th><th>Meaning shift</th></tr>
+        <tr><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">دَرَسَ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">دَرَّسَ</td><td>studied → taught</td></tr>
+        <tr><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">عَلِمَ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">عَلَّمَ</td><td>knew → taught</td></tr>
+        <tr><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">كَتَبَ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">كَتَّبَ</td><td>wrote → dictated</td></tr>
+        <tr><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">قَدَّمَ</td><td>—</td><td>already Form II (presented)</td></tr>
+      </table>
+
+      <h3 class="section-heading"><span class="section-letter">B</span> Form II Present Tense & Verbal Noun</h3>
+      <p class="body-text">The present tense of Form II follows a fixed pattern: <span style="font-family:'Amiri',serif;font-size:18px;">يُفَعِّلُ</span>. The verbal noun (masdar) is <span style="font-family:'Amiri',serif;font-size:18px;">تَفعيل</span>.</p>
+      <table class="example-table">
+        <tr><th>Past</th><th>Present</th><th>Verbal Noun</th></tr>
+        <tr><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">دَرَّسَ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">يُدَرِّسُ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">تَدريس</td></tr>
+        <tr><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">عَلَّمَ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">يُعَلِّمُ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">تَعليم</td></tr>
+        <tr><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">كَتَّبَ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">يُكَتِّبُ</td><td style="font-family:'Amiri',serif;font-size:18px;direction:rtl;text-align:right;">تَكتيب</td></tr>
+      </table>
+
+      <!-- DRILL 8 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 8</div>
+            <div class="drill-title">Form I → Form II</div>
+            <div class="drill-instructions">Type the Form II version of each Form I verb. Remember: double the middle root letter by adding a shadda (ّ).</div>
+          </div>
+          <div class="drill-score-badge" id="d8-badge">Not started</div>
+        </div>
+        <div id="drill8-container"></div>
+        <div class="drill-footer">
+          <span class="result-text" id="d8-result"></span>
+          <button class="check-all-btn" onclick="checkDrill8()">Check All</button>
+        </div>
+      </div>
+
+      <!-- DRILL 9 -->
+      <div class="drill-block">
+        <div class="drill-top">
+          <div>
+            <div class="drill-badge">Drill 9</div>
+            <div class="drill-title">Form II — Meaning Quiz</div>
+            <div class="drill-instructions">Choose the correct meaning for each Form II verb.</div>
+          </div>
+          <div class="drill-score-badge" id="d9-badge">Not started</div>
+        </div>
+        <div id="drill9-container"></div>
+      </div>
+
+      <div class="chapter-nav">
+        <button class="nav-btn" onclick="showChapter('ch3')">← Chapter 3</button>
+        <button class="nav-btn primary" style="background:var(--green);border-color:var(--green);" onclick="alert('🎉 You have completed all 4 chapters! More chapters coming soon.')">✓ Complete!</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+
+const D1_WORDS = [
+  {ar:'نَمر', sun:true},{ar:'كِتاب', sun:false},{ar:'شَمس', sun:true},
+  {ar:'قَلَم', sun:false},{ar:'زَمان', sun:true},{ar:'بَاب', sun:false},
+  {ar:'دِيناَر', sun:true},{ar:'عَيْن', sun:false},{ar:'طالِب', sun:false},
+  {ar:'لُغة', sun:false},{ar:'صادِق', sun:true},{ar:'هَواء', sun:false}
+];
+
+const D2_ITEMS = [
+  {en:"The teacher is excellent.", opts:["المُدَرِّسُ مُمتاز.","المُدَرِّسَ مُمتاز.","مُدَرِّسٌ مُمتاز."], ans:0},
+  {en:"She is Fatima.", opts:["هُوَ فاطِمة.","هِيَ فاطِمة.","أنتِ فاطِمة."], ans:1},
+  {en:"The book is new.", opts:["كِتابٌ جَديد.","الكِتابِ جَديدٌ.","الكِتابُ جَديدٌ."], ans:2},
+  {en:"I am a student (m.).", opts:["أنا طالبٌ.","أنا طالبَ.","أنا الطالبُ."], ans:0},
+  {en:"This school is excellent.", opts:["المَدرَسةُ جَديدة.","هذهِ المَدرَسةُ مُمتازة.","هذا مَدرَسةٌ مُمتازة."], ans:1},
+];
+
+const D3_ITEMS = [
+  {prompt:"الطالب___ جَديد.", hint:"Definite → one dhamma", ans:"ُ", full:"الطالبُ جَديد."},
+  {prompt:"طالب___ جَديد.", hint:"Indefinite → two dhammas (ٌ)", ans:"ٌ", full:"طالبٌ جَديد."},
+  {prompt:"المُدَرِّس___ مُمتاز.", hint:"Definite → one dhamma", ans:"ُ", full:"المُدَرِّسُ مُمتاز."},
+  {prompt:"مَدرَسة___ جَديدة.", hint:"Indefinite → two dhammas (ٌ)", ans:"ٌ", full:"مَدرَسةٌ جَديدة."},
+  {prompt:"هذا الكِتاب___ مُمتاز.", hint:"Definite → one dhamma", ans:"ُ", full:"هذا الكِتابُ مُمتاز."},
+];
+
+const D4_ITEMS = [
+  {ar:"كِتابُ الطالبِ", opts:["a student's book","the student's book","books of the student"], ans:1},
+  {ar:"بابُ البَيتِ", opts:["a house door","the house's door","the door's house"], ans:1},
+  {ar:"لُغةُ العَرَبِ", opts:["Arab language","a language of Arabs","the language of the Arabs"], ans:2},
+  {ar:"مَكتَبُ مُدَرِّسٍ", opts:["the teacher's office","an office of a teacher","teachers' offices"], ans:1},
+  {ar:"بابُ مَدرَسةٍ", opts:["the school door","a door of a school","school doors"], ans:1},
+];
+
+const D5_ITEMS = [
+  {ar:"كِتابُ الطالبِ", ok:true, note:"Correct — first noun has no ال, second is genitive."},
+  {ar:"الكِتابُ الطالبِ", ok:false, note:"Wrong — in an idaafa the first noun never takes ال."},
+  {ar:"بابُ البَيتِ", ok:true, note:"Correct idaafa."},
+  {ar:"مَكتَبُ المُدَرِّسَ", ok:false, note:"Wrong — the second noun must be genitive (kasra ِ), not accusative (fatḥa َ)."},
+  {ar:"لُغةُ العَرَبِ", ok:true, note:"Correct — three-noun chain works the same way."},
+];
+
+const D6_ITEMS = [
+  {ar:"كَتَبَ", sound:true, exp:"Root ك-ت-ب — all three letters strong."},
+  {ar:"قالَ", sound:false, exp:"Root ق-و-ل — middle letter و collapses to long vowel."},
+  {ar:"دَرَسَ", sound:true, exp:"Root د-ر-س — all strong letters."},
+  {ar:"باعَ", sound:false, exp:"Root ب-ي-ع — middle letter ي collapses."},
+  {ar:"فَتَحَ", sound:true, exp:"Root ف-ت-ح — all strong letters."},
+  {ar:"نامَ", sound:false, exp:"Root ن-و-م — middle letter و collapses."},
+  {ar:"ذَهَبَ", sound:true, exp:"Root ذ-ه-ب — all strong letters."},
+  {ar:"جاءَ", sound:false, exp:"Root ج-ي-ء — middle letter ي collapses."},
+];
+
+const D7_ITEMS = [
+  {ar:"يَكتُبُ", opts:["he wrote","he writes","she writes"], ans:1},
+  {ar:"فَهِمَت", opts:["she understood","she understands","he understood"], ans:0},
+  {ar:"يَقولُ", opts:["he said","she says","he says"], ans:2},
+  {ar:"دَرَسَ", opts:["he studies","he taught","he studied"], ans:2},
+  {ar:"تَذهَبُ", opts:["he goes","she went","she goes"], ans:2},
+  {ar:"فَتَحوا", opts:["they will open","they opened","he opens"], ans:1},
+];
+
+const D8_ITEMS = [
+  {f1:"دَرَسَ", f2:"دَرَّسَ", meaning:"studied → taught"},
+  {f1:"عَلِمَ", f2:"عَلَّمَ", meaning:"knew → taught"},
+  {f1:"كَتَبَ", f2:"كَتَّبَ", meaning:"wrote → dictated"},
+];
+
+const D9_ITEMS = [
+  {ar:"دَرَّسَ", opts:["he studied","he taught","he translated"], ans:1},
+  {ar:"عَلَّمَ", opts:["he knew","he taught","he learned"], ans:1},
+  {ar:"يُدَرِّسُ", opts:["he studied","he is teaching","he is studying"], ans:1},
+  {ar:"تَعليم", opts:["learning","teaching (verbal noun)","knowledge"], ans:1},
+];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let d1Placement = {}; // idx -> 'sun'|'moon'|null
+let d5Answered = 0, d5Correct = 0;
+let d6Answered = 0, d6Correct = 0;
+let chapDone = {ch1:false,ch2:false,ch3:false,ch4:false};
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showChapter(id) {
+  document.querySelectorAll('.chapter-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-chapter').forEach(n=>n.classList.remove('active'));
+  const navs = document.querySelectorAll('.nav-chapter');
+  const map = {ch1:0,ch2:1,ch3:2,ch4:3};
+  if(navs[map[id]]) navs[map[id]].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function completeAndNext(fromId, toId) {
+  chapDone[fromId] = true;
+  document.getElementById('done-'+fromId).textContent = '✓';
+  updateProgress();
+  showChapter(toId);
+}
+
+function updateProgress() {
+  const done = Object.values(chapDone).filter(Boolean).length;
+  const pct = Math.round(done/4*100);
+  document.getElementById('global-prog').style.width = pct+'%';
+  document.getElementById('prog-label').textContent = done+' / 4 chapters';
+}
+
+// ═══════════════════════════════════════════
+// DRILL 1 — Sun / Moon Classification
+// ═══════════════════════════════════════════
+function initDrill1() {
+  const pool = document.getElementById('chips-pool-1');
+  D1_WORDS.forEach((w,i) => {
+    const chip = document.createElement('button');
+    chip.className = 'word-chip'; chip.textContent = w.ar; chip.dataset.idx = i;
+    chip.onclick = () => cycleChip(i, chip);
+    pool.appendChild(chip);
+  });
+}
+
+function cycleChip(idx, chip) {
+  if(chip.classList.contains('chip-correct')||chip.classList.contains('chip-wrong')) return;
+  const cur = d1Placement[idx] || 'pool';
+  const next = cur==='pool'?'sun': cur==='sun'?'moon':'pool';
+  d1Placement[idx] = next;
+  chip.remove();
+  if(next==='pool') document.getElementById('chips-pool-1').appendChild(chip);
+  else document.getElementById('drop-'+next).appendChild(chip);
+}
+
+function checkDrill1() {
+  let ok=0, total=D1_WORDS.length;
+  D1_WORDS.forEach((w,i) => {
+    const chip = document.querySelector(`.word-chip[data-idx="${i}"]`);
+    if(!chip) return;
+    const placed = d1Placement[i] || 'pool';
+    const correct = (w.sun && placed==='sun') || (!w.sun && placed==='moon');
+    chip.classList.remove('chip-correct','chip-wrong');
+    chip.classList.add(correct?'chip-correct':'chip-wrong');
+    chip.disabled = true;
+    if(correct) ok++;
+  });
+  const badge = document.getElementById('d1-badge');
+  badge.textContent = ok+' / '+total;
+  badge.className = 'drill-score-badge' + (ok===total?' passed':'');
+  document.getElementById('d1-result').textContent = ok===total ? '✓ Perfect! All correct.' : ok+' correct — wrong chips highlighted in red.';
+  document.getElementById('d1-result').className = 'result-text'+(ok===total?' good':'');
+}
+
+// ═══════════════════════════════════════════
+// MCQ DRILL BUILDER
+// ═══════════════════════════════════════════
+function buildMCQ(items, containerId, badgeId, promptIsArabic=true) {
+  const c = document.getElementById(containerId);
+  let answered=0, correct=0;
+  items.forEach((item,qi) => {
+    const div = document.createElement('div');
+    div.className = 'mcq-item';
+    const promptHtml = promptIsArabic
+      ? `<div class="mcq-prompt">${item.ar||item.prompt}</div>${item.en||item.promptEn?`<div class="mcq-prompt-en">${item.en||item.promptEn}</div>`:''}`
+      : `<div class="mcq-prompt-en" style="font-size:15px;font-weight:600;margin-bottom:10px;">${item.en}</div>`;
+    const optClass = promptIsArabic ? 'mcq-btn' : 'mcq-btn en-option';
+    div.innerHTML = promptHtml +
+      `<div class="mcq-options">${item.opts.map((o,oi)=>
+        `<button class="${optClass}" onclick="handleMCQ(this,${qi},${oi},${item.ans},'${badgeId}',${items.length})">${o}</button>`
+      ).join('')}</div><div class="feedback" id="fb-${badgeId}-${qi}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+let mcqState = {}; // badgeId -> {answered, correct}
+function handleMCQ(btn, qi, sel, ans, badgeId, total) {
+  const parent = btn.closest('.mcq-options');
+  if(parent.dataset.done) return;
+  parent.dataset.done = '1';
+  [...parent.querySelectorAll('button')].forEach((b,i)=>{
+    b.disabled=true;
+    if(i===ans) b.classList.add('correct');
+    else if(i===sel&&sel!==ans) b.classList.add('wrong');
+  });
+  if(!mcqState[badgeId]) mcqState[badgeId]={answered:0,correct:0};
+  mcqState[badgeId].answered++;
+  if(sel===ans) mcqState[badgeId].correct++;
+  const fb = document.getElementById('fb-'+badgeId+'-'+qi);
+  const ok = sel===ans;
+  fb.textContent = ok ? '✓ Correct!' : '✗ See the highlighted correct answer.';
+  fb.className = 'feedback show '+(ok?'correct':'wrong');
+  const st = mcqState[badgeId];
+  const badge = document.getElementById(badgeId);
+  badge.textContent = st.answered+' / '+total+' answered';
+  if(st.answered===total){
+    badge.textContent=st.correct+' / '+total;
+    badge.className='drill-score-badge'+(st.correct===total?' passed':'');
+  }
+}
+
+// ═══════════════════════════════════════════
+// DRILL 3 — Nominative Endings
+// ═══════════════════════════════════════════
+function initDrill3() {
+  const c = document.getElementById('drill3-container');
+  D3_ITEMS.forEach((item,i) => {
+    c.innerHTML += `<div class="input-item">
+      <div class="input-prompt">${item.prompt}</div>
+      <div class="input-prompt-en">Hint: ${item.hint}</div>
+      <div class="input-row">
+        <input class="drill-input" id="d3inp-${i}" placeholder="Type the ending..." />
+        <button class="check-btn" onclick="checkD3item(${i})">Check</button>
+      </div>
+      <div class="feedback" id="d3fb-${i}"></div>
+    </div>`;
+  });
+}
+
+function checkD3item(i) {
+  const item = D3_ITEMS[i];
+  const val = document.getElementById('d3inp-'+i).value.trim();
+  const ok = val===item.ans;
+  document.getElementById('d3inp-'+i).className = 'drill-input '+(ok?'correct':'wrong');
+  const fb = document.getElementById('d3fb-'+i);
+  fb.textContent = ok ? `✓ Correct! Full sentence: ${item.full}` : `✗ The correct ending is "${item.ans}". Full sentence: ${item.full}`;
+  fb.className = 'feedback show '+(ok?'correct':'wrong');
+}
+
+function checkDrill3() {
+  let ok=0;
+  D3_ITEMS.forEach((_,i) => { checkD3item(i); if(document.getElementById('d3inp-'+i).classList.contains('correct')) ok++; });
+  const badge = document.getElementById('d3-badge');
+  badge.textContent = ok+' / '+D3_ITEMS.length;
+  badge.className = 'drill-score-badge'+(ok===D3_ITEMS.length?' passed':'');
+  document.getElementById('d3-result').textContent = ok+' / '+D3_ITEMS.length+' correct';
+  document.getElementById('d3-result').className = 'result-text'+(ok===D3_ITEMS.length?' good':'');
+}
+
+// ═══════════════════════════════════════════
+// DRILL 5 — Idaafa correct/not
+// ═══════════════════════════════════════════
+function initDrill5() {
+  const c = document.getElementById('drill5-container');
+  D5_ITEMS.forEach((item,i) => {
+    const div = document.createElement('div');
+    div.className = 'tf-item';
+    div.innerHTML = `<div class="tf-arabic">${item.ar}</div>
+      <div class="tf-btns">
+        <button class="tf-btn yes" onclick="checkD5(this,${i},true)">✓ Correct idaafa</button>
+        <button class="tf-btn no" onclick="checkD5(this,${i},false)">✗ Not correct</button>
+      </div>
+      <div class="feedback" id="d5fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+let d5score={a:0,c:0};
+function checkD5(btn,i,ans) {
+  const item=D5_ITEMS[i];
+  const parent=btn.closest('.tf-item');
+  if(parent.dataset.done) return;
+  parent.dataset.done='1';
+  parent.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+  const ok=ans===item.ok;
+  btn.classList.add(ok?'chosen-correct':'chosen-wrong');
+  const fb=document.getElementById('d5fb-'+i);
+  fb.textContent=(ok?'✓ ':'✗ ')+item.note;
+  fb.className='feedback show '+(ok?'correct':'wrong');
+  d5score.a++; if(ok) d5score.c++;
+  if(d5score.a===D5_ITEMS.length){
+    document.getElementById('d5-badge').textContent=d5score.c+' / '+D5_ITEMS.length;
+    document.getElementById('d5-badge').className='drill-score-badge'+(d5score.c===D5_ITEMS.length?' passed':'');
+    document.getElementById('d5-result').textContent=d5score.c+' / '+D5_ITEMS.length+' correct';
+    document.getElementById('d5-result').className='result-text'+(d5score.c===D5_ITEMS.length?' good':'');
+  }
+}
+
+// ═══════════════════════════════════════════
+// DRILL 6 — Sound vs Hollow
+// ═══════════════════════════════════════════
+function initDrill6() {
+  const c = document.getElementById('drill6-container');
+  D6_ITEMS.forEach((item,i) => {
+    const div = document.createElement('div');
+    div.className = 'tf-item';
+    div.innerHTML = `<div class="tf-arabic">${item.ar}</div>
+      <div class="tf-btns">
+        <button class="tf-btn yes" onclick="checkD6(this,${i},true)">Sound verb</button>
+        <button class="tf-btn no" onclick="checkD6(this,${i},false)">Hollow verb</button>
+      </div>
+      <div class="feedback" id="d6fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+}
+
+let d6score={a:0,c:0};
+function checkD6(btn,i,ans) {
+  const item=D6_ITEMS[i];
+  const parent=btn.closest('.tf-item');
+  if(parent.dataset.done) return;
+  parent.dataset.done='1';
+  parent.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+  const ok=ans===item.sound;
+  btn.classList.add(ok?'chosen-correct':'chosen-wrong');
+  const fb=document.getElementById('d6fb-'+i);
+  fb.textContent=(ok?'✓ Correct! ':'✗ Actually a '+(item.sound?'sound':'hollow')+' verb. ')+item.exp;
+  fb.className='feedback show '+(ok?'correct':'wrong');
+  d6score.a++; if(ok) d6score.c++;
+  if(d6score.a===D6_ITEMS.length){
+    document.getElementById('d6-badge').textContent=d6score.c+' / '+D6_ITEMS.length;
+    document.getElementById('d6-badge').className='drill-score-badge'+(d6score.c===D6_ITEMS.length?' passed':'');
+    document.getElementById('d6-result').textContent=d6score.c+' / '+D6_ITEMS.length+' correct';
+  }
+}
+
+// ═══════════════════════════════════════════
+// DRILL 8 — Form I → II
+// ═══════════════════════════════════════════
+function initDrill8() {
+  const c = document.getElementById('drill8-container');
+  D8_ITEMS.forEach((item,i) => {
+    c.innerHTML += `<div class="input-item">
+      <div class="input-prompt">${item.f1}</div>
+      <div class="input-prompt-en">Meaning shift: ${item.meaning}</div>
+      <div class="input-row">
+        <input class="drill-input" id="d8inp-${i}" placeholder="Type Form II..." />
+        <button class="check-btn" onclick="checkD8item(${i})">Check</button>
+      </div>
+      <div class="feedback" id="d8fb-${i}"></div>
+    </div>`;
+  });
+}
+
+function checkD8item(i) {
+  const item=D8_ITEMS[i];
+  const val=document.getElementById('d8inp-'+i).value.trim();
+  const ok=val===item.f2;
+  document.getElementById('d8inp-'+i).className='drill-input '+(ok?'correct':'wrong');
+  const fb=document.getElementById('d8fb-'+i);
+  fb.textContent=ok?`✓ Correct! ${item.f1} → ${item.f2}`:`✗ The answer is ${item.f2} (double the middle root letter).`;
+  fb.className='feedback show '+(ok?'correct':'wrong');
+}
+
+function checkDrill8() {
+  let ok=0;
+  D8_ITEMS.forEach((_,i)=>{ checkD8item(i); if(document.getElementById('d8inp-'+i).classList.contains('correct')) ok++; });
+  const badge=document.getElementById('d8-badge');
+  badge.textContent=ok+' / '+D8_ITEMS.length;
+  badge.className='drill-score-badge'+(ok===D8_ITEMS.length?' passed':'');
+  document.getElementById('d8-result').textContent=ok+' / '+D8_ITEMS.length+' correct';
+}
+
+// ═══════════════════════════════════════════
+// INIT ALL
+// ═══════════════════════════════════════════
+initDrill1();
+buildMCQ(D2_ITEMS, 'drill2-container', 'd2-badge', false);
+initDrill3();
+buildMCQ(D4_ITEMS, 'drill4-container', 'd4-badge', true);
+initDrill5();
+initDrill6();
+buildMCQ(D7_ITEMS, 'drill7-container', 'd7-badge', true);
+initDrill8();
+buildMCQ(D9_ITEMS, 'drill9-container', 'd9-badge', true);
+</script>
+</body>
+</html>
